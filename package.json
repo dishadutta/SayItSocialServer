@@ -4,8 +4,7 @@
   "description": "A Node JS API",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-  },
+    "start": "node app.js"},
   "keywords": [
     "node",
     "api"
