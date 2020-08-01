@@ -6,6 +6,13 @@ const { createPostValidator } = require("../validator");
 
 const router = express.Router();
 
+const app = express();
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 router.get("/posts", getPosts);
 
 //like unlike
