@@ -27,7 +27,7 @@ exports.postById = (req, res, next, id) => {
 exports.getPosts = (req, res) => {
   //res.send("Hello world from Js");
   //res.json({posts: [{title: "First post"}, {title: "Second post"}]});
-
+  res.header('Access-Control-Allow-Origin', '*');
   const posts = Post.find()
     .populate("postedBy", "_id name")
     .populate("comments", "text created")
