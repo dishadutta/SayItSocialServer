@@ -24,22 +24,43 @@ exports.postById = (req, res, next, id) => {
 };
 
 
-exports.getPosts = (req, res) => {
-  //res.send("Hello world from Js");
-  //res.json({posts: [{title: "First post"}, {title: "Second post"}]});
-  res.header('Access-Control-Allow-Origin', '*');
-  const posts = Post.find()
-    .populate("postedBy", "_id name")
-    .populate("comments", "text created")
-    .populate("comments.postedBy", "_id name")
-    .select("_id title body created likes")
-    .sort({ created: -1})
+// exports.getPosts = (req, res) => {
+//   //res.send("Hello world from Js");
+//   //res.json({posts: [{title: "First post"}, {title: "Second post"}]});
+//   res.header('Access-Control-Allow-Origin', '*');
+//   const posts = Post.find()
+//     .populate("postedBy", "_id name")
+//     .populate("comments", "text created")
+//     .populate("comments.postedBy", "_id name")
+//     .select("_id title body created likes")
+//     .sort({ created: -1})
+//     .then(posts => {
+//       res.json(posts);
+//     })
+//     .catch(err => console.log(err));
+// };
+
+exports.getPosts = async (req, res) => {
+  const currentPage = req.query.page || 1;
+  const perPage = 6;
+  let totalItems;
+  const posts = await Post.find()
+    .countDocuments()
+    .then(count => {
+      totalItems = count;
+      return Post.find()
+        .skip((currentPage - 1) * perPage)
+        .populate('comments', 'text created')
+        .populate("comments.postedBy", "_id name")
+        .populate("postedBy", "_id name")
+        .select("_id title body created likes")
+        .limit(perPage);
+    })
     .then(posts => {
-      res.json(posts);
+      res.status(200).json(posts);
     })
     .catch(err => console.log(err));
 };
-
 
 exports.createPost = (req, res, next) => {
   let form = new formidable.IncomingForm();
